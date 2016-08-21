@@ -94,13 +94,23 @@ int main(int argc, char *argv[])
 
     GS_SOCKET_DOMAIN_TYPE type[] = {GS_SOCKET_DOMAIN_UNIX, GS_SOCKET_DOMAIN_TCP};
     char *protocols[] = {"ipc://", "tcp://"};
+    const unsigned int protocols_size = GS_SOCKET_DOMAIN_AMOUNT;
 
-    for (int index = 0; index < GS_SOCKET_DOMAIN_AMOUNT; ++index) {
+    unsigned int index = 0;
+
+    for (index = 0; index < protocols_size; ++index) {
         if (strncmp(address, protocols[index], strlen(protocols[index])) == 0) {
-            send_message(type[index], strstr(address, "://") + 3, message, strlen(message));
             break;
         }
     }
+
+    if (index == protocols_size) {
+        free(address);
+        print_usage(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    send_message(type[index], address + strlen(protocols[index]), message, strlen(message));
 
     free(message);
     free(address);

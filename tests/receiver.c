@@ -25,9 +25,9 @@ static void print_usage(const char *binary_name)
     const char *format = "Usage: %s -b <address>\n"
                          "Options:\n"
                          "  -b    bind and listen the address\n"
-                         "        EXAMPLES\n"
-                         "        tcp://\033[0;31m127.0.0.1:10000\033[0m\n"
-                         "        ipc://\033[0;31m/tmp/uds.ipc\033[0m\n"
+                         "        Example:\n"
+                         "        tcp://127.0.0.1:10000\n"
+                         "        ipc:///tmp/uds.ipc\n"
                          "\n";
 
     printf(format, binary_name);
@@ -227,19 +227,28 @@ int main(int argc, char *argv[])
 
     GS_SOCKET_DOMAIN_TYPE type[] = {GS_SOCKET_DOMAIN_UNIX, GS_SOCKET_DOMAIN_TCP};
     char *protocols[] = {"ipc://", "tcp://"};
+    const unsigned int protocols_size = GS_SOCKET_DOMAIN_AMOUNT;
 
-    for (int index = 0; index < GS_SOCKET_DOMAIN_AMOUNT; ++index) {
+    unsigned int index = 0;
+
+    for (index = 0; index < protocols_size; ++index) {
         if (strncmp(address, protocols[index], strlen(protocols[index])) == 0) {
-            running = true;
-
-            signal(SIGINT, signal_handler);
-            signal(SIGTERM, signal_handler);
-
-            create_server(strstr(address, "://") + 3, type[index]);
-
             break;
         }
     }
+
+    if (index == protocols_size) {
+        free(address);
+        print_usage(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    running = true;
+
+    signal(SIGINT, signal_handler);
+    signal(SIGTERM, signal_handler);
+
+    create_server(address + strlen(protocols[index]), type[index]);
 
     printf("Bye ...\n");
 

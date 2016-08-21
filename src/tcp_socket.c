@@ -62,6 +62,8 @@ static int gs_tcp_socket_bind(struct gs_socket_t *gsocket, const char *address, 
 
     struct ipv4_address_t ip_addr;
 
+    memset(&ip_addr, 0, sizeof(struct ipv4_address_t));
+
     if (address_to_ipv4(address, &ip_addr) != 0) {
         return -1;
     }
@@ -74,7 +76,7 @@ static int gs_tcp_socket_bind(struct gs_socket_t *gsocket, const char *address, 
 
     struct sockaddr_in socket_addr;
     socket_addr.sin_family = AF_INET;
-    socket_addr.sin_port = ip_addr.port;
+    socket_addr.sin_port = htons(ip_addr.port);
     socket_addr.sin_addr.s_addr = inet_addr(ip_addr.ip);
 
     if (bind(gsocket->fd, (struct sockaddr *)&socket_addr, sizeof(socket_addr)) != 0) {
@@ -105,7 +107,7 @@ static int gs_tcp_socket_accept(struct gs_socket_t *gsocket, char *address, unsi
     }
 
     if (address && length) {
-        snprintf(address, length, "%s:%d", inet_ntoa(client_info.sin_addr), (int)client_info.sin_port);
+        snprintf(address, length, "%s:%u", inet_ntoa(client_info.sin_addr), ntohs(client_info.sin_port));
     }
 
     client->fd = client_fd;
@@ -120,6 +122,7 @@ static int gs_tcp_socket_connect(struct gs_socket_t *gsocket, const char *addres
     }
 
     struct ipv4_address_t ip_addr;
+    memset(&ip_addr, 0, sizeof(struct ipv4_address_t));
 
     if (address_to_ipv4(address, &ip_addr) < 0) {
         return -1;
@@ -132,8 +135,9 @@ static int gs_tcp_socket_connect(struct gs_socket_t *gsocket, const char *addres
     }
 
     struct sockaddr_in socket_addr;
+    memset(&socket_addr, 0, sizeof(struct sockaddr_in));
     socket_addr.sin_family = AF_INET;
-    socket_addr.sin_port = ip_addr.port;
+    socket_addr.sin_port = htons(ip_addr.port);
     socket_addr.sin_addr.s_addr = inet_addr(ip_addr.ip);
 
     if (connect(gsocket->fd, (struct sockaddr *)&socket_addr, sizeof(socket_addr)) != 0) {

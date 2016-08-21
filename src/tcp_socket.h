@@ -1,5 +1,5 @@
-#ifndef TCP_SOCKET_H
-#define TCP_SOCKET_H
+#ifndef GS_TCP_SOCKET_H
+#define GS_TCP_SOCKET_H
 
 #include "socket.h"
 
