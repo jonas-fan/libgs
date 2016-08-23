@@ -85,15 +85,8 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    if (strcspn(address, "://") > 3) {
-        free(address);
-        free(message);
-        print_usage(argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
     GS_SOCKET_DOMAIN_TYPE type[] = {GS_SOCKET_DOMAIN_UNIX, GS_SOCKET_DOMAIN_TCP};
-    char *protocols[] = {"ipc://", "tcp://"};
+    const char *protocols[] = {"ipc://", "tcp://"};
     const unsigned int protocols_size = GS_SOCKET_DOMAIN_AMOUNT;
 
     unsigned int index = 0;
@@ -106,6 +99,7 @@ int main(int argc, char *argv[])
 
     if (index == protocols_size) {
         free(address);
+        free(message);
         print_usage(argv[0]);
         exit(EXIT_FAILURE);
     }
