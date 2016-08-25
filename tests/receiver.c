@@ -33,7 +33,7 @@ static void print_usage(const char *binary_name)
     printf(format, binary_name);
 }
 
-static void signal_handler(int number)
+static void signal_handler(const int number)
 {
     running = false;
 
@@ -47,7 +47,7 @@ static inline void swap(char *lhs, char *rhs)
     *rhs = temp;
 }
 
-static void reverse(char *string, unsigned int length)
+static void reverse(char *string, const unsigned int length)
 {
     const unsigned int middle = length >> 1;
 
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    GS_SOCKET_DOMAIN_TYPE type[] = {GS_SOCKET_DOMAIN_UNIX, GS_SOCKET_DOMAIN_TCP};
+    const GS_SOCKET_DOMAIN_TYPE type[] = {GS_SOCKET_DOMAIN_UNIX, GS_SOCKET_DOMAIN_TCP};
     const char *protocols[] = {"ipc://", "tcp://"};
     const unsigned int protocols_size = GS_SOCKET_DOMAIN_AMOUNT;
 

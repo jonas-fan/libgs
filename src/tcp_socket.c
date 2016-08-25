@@ -54,7 +54,7 @@ static int gs_tcp_socket_init(struct gs_socket_t *gsocket)
     return 0;
 }
 
-static int gs_tcp_socket_bind(struct gs_socket_t *gsocket, const char *address, int backlog)
+static int gs_tcp_socket_bind(struct gs_socket_t *gsocket, const char *address, const int backlog)
 {
     if (gsocket->fd > 0) {
         return -1;
@@ -92,7 +92,7 @@ static int gs_tcp_socket_bind(struct gs_socket_t *gsocket, const char *address, 
     return 0;
 }
 
-static int gs_tcp_socket_accept(struct gs_socket_t *gsocket, char *address, unsigned int length, struct gs_socket_t *client)
+static int gs_tcp_socket_accept(struct gs_socket_t *gsocket, char *address, const unsigned int length, struct gs_socket_t *client)
 {
     struct sockaddr_in client_info;
 
@@ -147,7 +147,7 @@ static int gs_tcp_socket_connect(struct gs_socket_t *gsocket, const char *addres
     return 0;
 }
 
-static int gs_tcp_socket_send(struct gs_socket_t *gsocket, const void *data, unsigned int length, int flags)
+static int gs_tcp_socket_send(struct gs_socket_t *gsocket, const void *data, const unsigned int length, const int flags)
 {
     struct iovec iov = {
         .iov_base = NULL,
@@ -168,7 +168,7 @@ static int gs_tcp_socket_send(struct gs_socket_t *gsocket, const void *data, uns
     return sendmsg(gsocket->fd, &messagehdr, flags);
 }
 
-static int gs_tcp_socket_recv(struct gs_socket_t *gsocket, void *data, unsigned int length, int flags)
+static int gs_tcp_socket_recv(struct gs_socket_t *gsocket, void *data, const unsigned int length, const int flags)
 {
     struct iovec iov = {
         .iov_base = NULL,
@@ -194,7 +194,6 @@ static int gs_tcp_socket_close(struct gs_socket_t *gsocket)
     close(gsocket->fd);
     free(gsocket->address);
 
-    //reset default
     gsocket->fd = 0;
     gsocket->address = NULL;
 
