@@ -24,7 +24,7 @@ static void print_usage(const char *binary_name)
     printf(format, binary_name);
 }
 
-static void send_message(const GS_SOCKET_DOMAIN_TYPE type, const char *address, const char *data, unsigned int data_length)
+static void send_message(GS_SOCKET_DOMAIN_TYPE type, const char *address, const char *data, unsigned int data_length)
 {
     struct gs_socket_t *gsocket = gs_socket(type);
 

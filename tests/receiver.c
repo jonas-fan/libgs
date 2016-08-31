@@ -33,7 +33,7 @@ static void print_usage(const char *binary_name)
     printf(format, binary_name);
 }
 
-static void signal_handler(const int number)
+static void signal_handler(int number)
 {
     running = false;
 
@@ -47,7 +47,7 @@ static inline void swap(char *lhs, char *rhs)
     *rhs = temp;
 }
 
-static void reverse(char *string, const unsigned int length)
+static void reverse(char *string, unsigned int length)
 {
     const unsigned int middle = length >> 1;
 
