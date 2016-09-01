@@ -15,7 +15,7 @@ static void print_usage(const char *binary_name)
     const char *format = "Usage: %s -c <address> -m <message>\n"
                          "Options:\n"
                          "  -c    connect to the remote address\n"
-                         "        EXAMPLES\n"
+                         "        Examples:\n"
                          "        tcp://127.0.0.1:10000\n"
                          "        ipc:///tmp/uds.ipc\n"
                          "  -m    transfer message to peer\n"

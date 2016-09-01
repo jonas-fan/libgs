@@ -61,7 +61,6 @@ static int gs_tcp_socket_bind(struct gs_socket_t *gsocket, const char *address, 
     }
 
     struct ipv4_address_t ip_addr;
-
     memset(&ip_addr, 0, sizeof(struct ipv4_address_t));
 
     if (address_to_ipv4(address, &ip_addr) != 0) {
@@ -76,6 +75,7 @@ static int gs_tcp_socket_bind(struct gs_socket_t *gsocket, const char *address, 
 
     struct sockaddr_in socket_addr;
     memset(&socket_addr, 0, sizeof(struct sockaddr_in));
+
     socket_addr.sin_family = AF_INET;
     socket_addr.sin_port = htons(ip_addr.port);
     socket_addr.sin_addr.s_addr = inet_addr(ip_addr.ip);
@@ -96,7 +96,6 @@ static int gs_tcp_socket_bind(struct gs_socket_t *gsocket, const char *address, 
 static int gs_tcp_socket_accept(struct gs_socket_t *gsocket, char *address, unsigned int length, struct gs_socket_t *client)
 {
     struct sockaddr_in client_info;
-
     memset((void *)&client_info, 0, sizeof(struct sockaddr_in));
 
     socklen_t sockaddr_len = sizeof(struct sockaddr_in);
@@ -137,6 +136,7 @@ static int gs_tcp_socket_connect(struct gs_socket_t *gsocket, const char *addres
 
     struct sockaddr_in socket_addr;
     memset(&socket_addr, 0, sizeof(struct sockaddr_in));
+
     socket_addr.sin_family = AF_INET;
     socket_addr.sin_port = htons(ip_addr.port);
     socket_addr.sin_addr.s_addr = inet_addr(ip_addr.ip);
@@ -151,12 +151,9 @@ static int gs_tcp_socket_connect(struct gs_socket_t *gsocket, const char *addres
 static int gs_tcp_socket_send(struct gs_socket_t *gsocket, const void *data, unsigned int length, int flags)
 {
     struct iovec iov = {
-        .iov_base = NULL,
-        .iov_len = 0
+        .iov_base = (void *)data,
+        .iov_len = length
     };
-
-    iov.iov_base = (void *)data;
-    iov.iov_len = length;
 
     struct msghdr messagehdr;
     memset((void *)&messagehdr, 0, sizeof(struct msghdr));
@@ -172,12 +169,9 @@ static int gs_tcp_socket_send(struct gs_socket_t *gsocket, const void *data, uns
 static int gs_tcp_socket_recv(struct gs_socket_t *gsocket, void *data, unsigned int length, int flags)
 {
     struct iovec iov = {
-        .iov_base = NULL,
-        .iov_len = 0
+        .iov_base = data,
+        .iov_len = length;
     };
-
-    iov.iov_base = data;
-    iov.iov_len = length;
 
     struct msghdr messagehdr;
     memset((void *)&messagehdr, 0, sizeof(struct msghdr));
