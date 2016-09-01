@@ -16,8 +16,8 @@ static void print_usage(const char *binary_name)
                          "Options:\n"
                          "  -c    connect to the remote address\n"
                          "        EXAMPLES\n"
-                         "        tcp://\033[0;31m127.0.0.1:10000\033[0m\n"
-                         "        ipc://\033[0;31m/tmp/uds.ipc\033[0m\n"
+                         "        tcp://127.0.0.1:10000\n"
+                         "        ipc:///tmp/uds.ipc\n"
                          "  -m    transfer message to peer\n"
                          "\n";
 
