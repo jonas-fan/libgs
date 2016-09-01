@@ -75,6 +75,7 @@ static int gs_tcp_socket_bind(struct gs_socket_t *gsocket, const char *address, 
     }
 
     struct sockaddr_in socket_addr;
+    memset(&socket_addr, 0, sizeof(struct sockaddr_in));
     socket_addr.sin_family = AF_INET;
     socket_addr.sin_port = htons(ip_addr.port);
     socket_addr.sin_addr.s_addr = inet_addr(ip_addr.ip);
