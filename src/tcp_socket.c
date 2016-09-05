@@ -170,7 +170,7 @@ static int gs_tcp_socket_recv(struct gs_socket_t *gsocket, void *data, unsigned 
 {
     struct iovec iov = {
         .iov_base = data,
-        .iov_len = length;
+        .iov_len = length
     };
 
     struct msghdr messagehdr;
