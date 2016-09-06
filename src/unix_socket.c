@@ -102,9 +102,9 @@ static int gs_unix_socket_connect(struct gs_socket_t *gsocket, const char *addre
         return -1;
     }
 
-    gsocket->fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    int fd = socket(AF_UNIX, SOCK_STREAM, 0);
 
-    if (gsocket->fd < 0) {
+    if (fd < 0) {
         return -1;
     }
 
@@ -118,7 +118,14 @@ static int gs_unix_socket_connect(struct gs_socket_t *gsocket, const char *addre
         socket_addr.sun_path[0] = '\0';
     }
 
-    return connect(gsocket->fd, &socket_addr, sizeof(struct sockaddr_un));
+    if (connect(fd, &socket_addr, sizeof(struct sockaddr_un)) < 0) {
+        close(fd);
+        return -1;
+    }
+
+    gsocket->fd = fd;
+
+    return 0;
 }
 
 static int gs_unix_socket_send(struct gs_socket_t *gsocket, const void *data, unsigned int length, int flags)

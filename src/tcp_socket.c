@@ -148,9 +148,9 @@ static int gs_tcp_socket_connect(struct gs_socket_t *gsocket, const char *addres
         return -1;
     }
 
-    gsocket->fd = socket(AF_INET, SOCK_STREAM, 0);
+    int fd = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (gsocket->fd < 0) {
+    if (fd < 0) {
         return -1;
     }
 
@@ -161,7 +161,14 @@ static int gs_tcp_socket_connect(struct gs_socket_t *gsocket, const char *addres
     socket_addr.sin_port = htons(ip_addr.port);
     socket_addr.sin_addr.s_addr = inet_addr(ip_addr.ip);
 
-    return connect(gsocket->fd, (struct sockaddr *)&socket_addr, sizeof(socket_addr));
+    if (connect(fd, (struct sockaddr *)&socket_addr, sizeof(socket_addr)) < 0) {
+        close(fd);
+        return -1;
+    }
+
+    gsocket->fd = fd;
+
+    return 0;
 }
 
 static int gs_tcp_socket_send(struct gs_socket_t *gsocket, const void *data, unsigned int length, int flags)
