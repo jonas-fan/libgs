@@ -12,16 +12,16 @@
 
 static void print_usage(const char *binary_name)
 {
-    const char *format = "Usage: %s -c <address> -m <message>\n"
+    const char *format = "Usage: %s [options]\n"
                          "Options:\n"
-                         "  -c    connect to the remote address\n"
-                         "        Examples:\n"
-                         "        tcp://127.0.0.1:10000\n"
-                         "        ipc:///tmp/uds.ipc\n"
-                         "  -m    transfer message to peer\n"
+                         "    -c <procotol://address>  connect to the remote address\n"
+                         "    -m <message>  transfer message to peer\n"
+                         "Examples:\n"
+                         "    %s -c ipc:///tmp/uds.ipc -m \"Hello libgs!\"\n"
+                         "    %s -c tcp://127.0.0.1:10000 -m \"Hello libgs!\"\n"
                          "\n";
 
-    printf(format, binary_name);
+    printf(format, binary_name, binary_name, binary_name);
 }
 
 static void send_message(GS_SOCKET_DOMAIN_TYPE type, const char *address, const char *data, unsigned int data_length)

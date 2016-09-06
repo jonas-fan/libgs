@@ -20,6 +20,8 @@ struct gs_socket_base_t
 {
     int (*init)(struct gs_socket_t *gsocket);
 
+    int (*close)(struct gs_socket_t *gsocket);
+
     int (*bind)(struct gs_socket_t *gsocket, const char *address, int backlog);
 
     int (*accept)(struct gs_socket_t *gsocket, char *address, unsigned int length, struct gs_socket_t *client);
@@ -29,8 +31,6 @@ struct gs_socket_base_t
     int (*send)(struct gs_socket_t *gsocket, const void *data, unsigned int length, int flags);
 
     int (*recv)(struct gs_socket_t *gsocket, void *data, unsigned int length, int flags);
-
-    int (*close)(struct gs_socket_t *gsocket);
 };
 
 struct gs_socket_t * gs_socket_create(GS_SOCKET_DOMAIN_TYPE domain);
