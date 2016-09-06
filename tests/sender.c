@@ -15,15 +15,18 @@ static void print_usage(const char *binary_name)
     const char *format = "Usage: %s -c <address> -m <message>\n"
                          "Options:\n"
                          "  -c    connect to the remote address\n"
+                         "        Examples:\n"
+                         "        tcp://127.0.0.1:10000\n"
+                         "        ipc:///tmp/uds.ipc\n"
                          "  -m    transfer message to peer\n"
                          "\n";
 
     printf(format, binary_name);
 }
 
-static void send_message(const char *address, const char *data, unsigned int data_length)
+static void send_message(GS_SOCKET_DOMAIN_TYPE type, const char *address, const char *data, unsigned int data_length)
 {
-    struct gs_socket_t *gsocket = gs_socket(GS_SOCKET_DOMAIN_UNIX);
+    struct gs_socket_t *gsocket = gs_socket(type);
 
     assert(gsocket != NULL);
 
@@ -76,13 +79,32 @@ int main(int argc, char *argv[])
     }
 
     if (!address || !message) {
-        free(message);
         free(address);
+        free(message);
         print_usage(argv[0]);
         exit(EXIT_FAILURE);
     }
 
-    send_message(address, message, strlen(message));
+    const GS_SOCKET_DOMAIN_TYPE type[] = {GS_SOCKET_DOMAIN_UNIX, GS_SOCKET_DOMAIN_TCP};
+    const char *protocols[] = {"ipc://", "tcp://"};
+    const unsigned int protocols_size = GS_SOCKET_DOMAIN_AMOUNT;
+
+    unsigned int index = 0;
+
+    for (index = 0; index < protocols_size; ++index) {
+        if (strncmp(address, protocols[index], strlen(protocols[index])) == 0) {
+            break;
+        }
+    }
+
+    if (index == protocols_size) {
+        free(address);
+        free(message);
+        print_usage(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    send_message(type[index], address + strlen(protocols[index]), message, strlen(message));
 
     free(message);
     free(address);

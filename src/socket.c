@@ -1,5 +1,6 @@
 #include "socket.h"
 #include "unix_socket.h"
+#include "tcp_socket.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -11,6 +12,9 @@ struct gs_socket_t * gs_socket_create(GS_SOCKET_DOMAIN_TYPE domain)
     switch (domain) {
         case GS_SOCKET_DOMAIN_UNIX:
             base = gs_unix_socket_base();
+            break;
+        case GS_SOCKET_DOMAIN_TCP:
+            base = gs_tcp_socket_base();
             break;
         default:
             return NULL;

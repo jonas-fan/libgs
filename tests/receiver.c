@@ -25,6 +25,9 @@ static void print_usage(const char *binary_name)
     const char *format = "Usage: %s -b <address>\n"
                          "Options:\n"
                          "  -b    bind and listen the address\n"
+                         "        Example:\n"
+                         "        tcp://127.0.0.1:10000\n"
+                         "        ipc:///tmp/uds.ipc\n"
                          "\n";
 
     printf(format, binary_name);
@@ -124,9 +127,9 @@ static void do_handle(struct gs_socket_t *gsocket)
     pthread_create(&thread, NULL, connection_handler, gsocket);
 }
 
-static void create_server(const char *address)
+static void create_server(const char *address, GS_SOCKET_DOMAIN_TYPE type)
 {
-    struct gs_socket_t *gsocket = gs_socket(GS_SOCKET_DOMAIN_UNIX);
+    struct gs_socket_t *gsocket = gs_socket(type);
 
     assert(gsocket != NULL);
 
@@ -216,12 +219,30 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
+    const GS_SOCKET_DOMAIN_TYPE type[] = {GS_SOCKET_DOMAIN_UNIX, GS_SOCKET_DOMAIN_TCP};
+    const char *protocols[] = {"ipc://", "tcp://"};
+    const unsigned int protocols_size = GS_SOCKET_DOMAIN_AMOUNT;
+
+    unsigned int index = 0;
+
+    for (index = 0; index < protocols_size; ++index) {
+        if (strncmp(address, protocols[index], strlen(protocols[index])) == 0) {
+            break;
+        }
+    }
+
+    if (index == protocols_size) {
+        free(address);
+        print_usage(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
     running = true;
 
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
 
-    create_server(address);
+    create_server(address + strlen(protocols[index]), type[index]);
 
     printf("Bye ...\n");
 

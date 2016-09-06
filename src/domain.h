@@ -7,7 +7,9 @@ extern "C" {
 
 typedef enum
 {
-    GS_SOCKET_DOMAIN_UNIX = 0
+    GS_SOCKET_DOMAIN_UNIX = 0,
+    GS_SOCKET_DOMAIN_TCP,
+    GS_SOCKET_DOMAIN_AMOUNT
 } GS_SOCKET_DOMAIN_TYPE;
 
 #ifdef __cplusplus
