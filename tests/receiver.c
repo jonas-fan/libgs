@@ -22,15 +22,15 @@ static int epoll_fd = -1;
 
 static void print_usage(const char *binary_name)
 {
-    const char *format = "Usage: %s -b <address>\n"
+    const char *format = "Usage: %s [options]\n"
                          "Options:\n"
-                         "  -b    bind and listen the address\n"
-                         "        Example:\n"
-                         "        tcp://127.0.0.1:10000\n"
-                         "        ipc:///tmp/uds.ipc\n"
+                         "    -b <address>  bind and listen the address\n"
+                         "Examples:\n"
+                         "    %s -b ipc:///tmp/uds.ipc\n"
+                         "    %s -b tcp://127.0.0.1:10000\n"
                          "\n";
 
-    printf(format, binary_name);
+    printf(format, binary_name, binary_name, binary_name);
 }
 
 static void signal_handler(int number)
@@ -127,7 +127,7 @@ static void do_handle(struct gs_socket_t *gsocket)
     pthread_create(&thread, NULL, connection_handler, gsocket);
 }
 
-static void create_server(const char *address, GS_SOCKET_DOMAIN_TYPE type)
+static void create_server(GS_SOCKET_DOMAIN_TYPE type, const char *address)
 {
     struct gs_socket_t *gsocket = gs_socket(type);
 
@@ -173,11 +173,11 @@ static void create_server(const char *address, GS_SOCKET_DOMAIN_TYPE type)
         }
 
         for (int index = 0; index < num_fds; ++index) {
-            if (events[index].data.ptr == gsocket) {
-                do_accept(events[index].data.ptr);
-            }
-            else if (events[index].events & EPOLLRDHUP) {
+            if (events[index].events & EPOLLRDHUP) {
                 do_shutdown(events[index].data.ptr);
+            }
+            else if (events[index].data.ptr == gsocket) {
+                do_accept(events[index].data.ptr);
             }
             else {
                 do_handle(events[index].data.ptr);
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
 
-    create_server(address + strlen(protocols[index]), type[index]);
+    create_server(type[index], address + strlen(protocols[index]));
 
     printf("Bye ...\n");
 
